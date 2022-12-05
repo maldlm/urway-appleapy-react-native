@@ -45,9 +45,9 @@
   "author": "ameralshabebi <69112877+ameralshabebi@users.noreply.github.com> (https://test.test)",
   "license": "MIT",
   "bugs": {
-    "url": "https://test.test/issues"
+    "url": "https://github.com/kasserXX99/urway-appleapy-react-native.git"
   },
-  "homepage": "https://test.test#readme",
+  "homepage": "https://github.com/kasserXX99/urway-appleapy-react-native.git",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
@@ -91,28 +91,6 @@
       "<rootDir>/example/node_modules",
       "<rootDir>/lib/"
     ]
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  },
-  "release-it": {
-    "git": {
-      "commitMessage": "chore: release ${version}",
-      "tagName": "v${version}"
-    },
-    "npm": {
-      "publish": true
-    },
-    "github": {
-      "release": true
-    },
-    "plugins": {
-      "@release-it/conventional-changelog": {
-        "preset": "angular"
-      }
-    }
   },
   "eslintConfig": {
     "root": true,
