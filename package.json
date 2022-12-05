@@ -42,12 +42,12 @@
     "android"
   ],
   "repository": "https://test.test",
-  "author": "ameralshabebi <69112877+ameralshabebi@users.noreply.github.com> (https://test.test)",
+  "author": "ameralshabebi <69112877+ameralshabebi@users.noreply.github.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kasserXX99/urway-appleapy-react-native.git"
+    "url": "https://github.com/URWAYios/urway-appleapy-react-native.git"
   },
-  "homepage": "https://github.com/kasserXX99/urway-appleapy-react-native.git",
+  "homepage": "https://github.com/URWAYios/urway-appleapy-react-native.git",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
