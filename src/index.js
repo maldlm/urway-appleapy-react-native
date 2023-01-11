@@ -1,8 +1,7 @@
-import { NativeModules, Platform } from 'react-native';
-const { Applepay } = NativeModules;
 import CryptoJS from 'crypto-js';
+import { Alert, NativeModules, Platform } from 'react-native';
 import { config } from '../../../config';
-import { Alert } from 'react-native';
+const { Applepay } = NativeModules;
 
 /**
  * Class representing URWAY payment
@@ -101,7 +100,7 @@ export default class Urway {
       customerIp: '10.10.10.10',
       applepayId: 'applepay',
       udf1: null,
-      udf2: null,
+      udf2: config.callbackUrl,
       udf3: null,
       udf4: 'ApplePay',
       udf5: token,
