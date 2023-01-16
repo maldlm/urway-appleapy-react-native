@@ -29,8 +29,8 @@ class Applepay : NSObject {
   var amount : String?
   var err : PKPaymentAuthorizationResult?
 
-  
-  
+
+
 
   @available(iOS 12.1.1, *)
   static let supportedNetworks: [PKPaymentNetwork] = [
@@ -50,9 +50,9 @@ class Applepay : NSObject {
   ]
   @objc
   func createApplePayToken(_ merchantIdentfier:String,amount:String,label:String,callback:@escaping RCTResponseSenderBlock) -> Void {
-    
+
     let deviceCanMakePayment = Applepay.applePayStatus();
-    
+
     if !deviceCanMakePayment {
 
       callback(["this device dose not support applepay"]);
@@ -62,11 +62,11 @@ class Applepay : NSObject {
       self.label = label;
       self.response = callback;
       self.amount = amount
-      
+
       self.startPayment()
     }
   }
-    
+
   func startPayment() -> Void{
     let total = PKPaymentSummaryItem(label: self.label!, amount: NSDecimalNumber(string: self.amount!), type: .final)
       paymentSummaryItems = [total]
@@ -81,7 +81,7 @@ class Applepay : NSObject {
       } else {
           paymentRequest.supportedNetworks = Applepay.supportedNetworksWithoutMada
       }
-      
+
       paymentController = PKPaymentAuthorizationController(paymentRequest: paymentRequest)
       paymentController?.delegate = self
       paymentController?.present(completion: { (presented: Bool) in
@@ -90,26 +90,26 @@ class Applepay : NSObject {
           } else {
             self.response!(["apple pay is not set up correctly: [ no cards , merchantIdentifier]"])
             debugPrint("Failed to present payment controller")
-              
+
           }
       })
     }
-    
+
   class func applePayStatus() -> (Bool) {
       return (PKPaymentAuthorizationController.canMakePayments())
-    
+
   }
   func getToken (token:PKPayment) -> PKPayment {
     return token
   }
-  
+
   public static func generatePaymentKey(payment: PKPayment) -> NSString {
-      
+
       let data12 = payment.token.paymentData
       let method = payment.token.paymentMethod
-      
+
       if let jsonString = NSString(data: data12, encoding: .zero) {
-          
+
           let prefixString: NSString = "\("{ \"paymentData\"  : ")" as NSString
           let finalSuffixString: NSString = """
               , "paymentMethod": {
@@ -119,20 +119,20 @@ class Applepay : NSObject {
               },
               "transactionIdentifier": "\(payment.token.transactionIdentifier)" }
               """ as NSString
-          
+
           let combinderString: NSString = "\(prefixString) \(jsonString) \(finalSuffixString)" as NSString
           print("apple pay token is equal to : \(combinderString)")
           return combinderString
       }
-      
+
       return ""
   }
-  
+
   @objc
     static func requiresMainQueueSetup() -> Bool {
     return false;
   }
-  
+
 }
 
 extension Applepay: PKPaymentAuthorizationControllerDelegate {
@@ -142,14 +142,18 @@ extension Applepay: PKPaymentAuthorizationControllerDelegate {
 
       self.paymentStatus = .success
       self.response!([NSNull(),token])
-      
-      
+
+
       completion(PKPaymentAuthorizationResult(status: self.paymentStatus, errors: nil ))
-        
+
     }
-    
+
     func paymentAuthorizationControllerDidFinish(_ controller: PKPaymentAuthorizationController) {
         print("sheet closed")
-        controller.dismiss(completion: nil)
+        controller.dismiss(completion: userDismiss)
+    }
+
+    func userDismiss() {
+        self.response!(["dismiss"])
     }
 }

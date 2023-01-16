@@ -41,6 +41,9 @@ export default class Urway {
         label,
         async (err, token) => {
           if (err) {
+            if (err === 'dismiss') {
+              rej(err);
+            } else {
             Alert.alert('Error', `${err}`, [
               {
                 text: 'ok',
@@ -48,6 +51,7 @@ export default class Urway {
               },
             ]);
             rej(`error coming from ios ${err}`);
+          }
           }
           let paymentRequest = this.generatePaymentRequest(
             token,
