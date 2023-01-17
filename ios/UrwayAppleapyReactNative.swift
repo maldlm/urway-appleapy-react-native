@@ -13,7 +13,6 @@ import React
 typealias PaymentCompletionHandler = (Bool) -> Void
 
 
-
 @objc(Applepay)
 class Applepay : NSObject {
 
@@ -24,6 +23,7 @@ class Applepay : NSObject {
   var appleToken : PKPayment?
   var merchantIdentfier : String?
   var label : String?
+  var allowedNetworks: [String]?
   var response :RCTResponseSenderBlock?
   var result : PKPaymentAuthorizationResult?
   var amount : String?
@@ -49,7 +49,7 @@ class Applepay : NSObject {
       .quicPay
   ]
   @objc
-  func createApplePayToken(_ merchantIdentfier:String,amount:String,label:String,callback:@escaping RCTResponseSenderBlock) -> Void {
+    func createApplePayToken(_ merchantIdentfier:String,amount:String,label:String,allowedNetworks:[String], callback:@escaping RCTResponseSenderBlock) -> Void {
 
     let deviceCanMakePayment = Applepay.applePayStatus();
 
@@ -60,14 +60,15 @@ class Applepay : NSObject {
     else {
       self.merchantIdentfier = merchantIdentfier;
       self.label = label;
+      self.allowedNetworks = allowedNetworks;
       self.response = callback;
       self.amount = amount
 
-      self.startPayment()
+        self.startPayment(allowedNetworks: allowedNetworks)
     }
   }
 
-  func startPayment() -> Void{
+  func startPayment(allowedNetworks:[String]) -> Void{
     let total = PKPaymentSummaryItem(label: self.label!, amount: NSDecimalNumber(string: self.amount!), type: .final)
       paymentSummaryItems = [total]
       let paymentRequest = PKPaymentRequest()
@@ -77,9 +78,9 @@ class Applepay : NSObject {
       paymentRequest.countryCode = "SA"
       paymentRequest.currencyCode = "SAR"
         if #available(iOS 12.1.1, *) {
-          paymentRequest.supportedNetworks = Applepay.supportedNetworks
+          paymentRequest.supportedNetworks = Applepay.supportedNetworks.filter { allowedNetworks.contains($0.rawValue) }
       } else {
-          paymentRequest.supportedNetworks = Applepay.supportedNetworksWithoutMada
+          paymentRequest.supportedNetworks = Applepay.supportedNetworksWithoutMada.filter { allowedNetworks.contains($0.rawValue) }
       }
 
       paymentController = PKPaymentAuthorizationController(paymentRequest: paymentRequest)

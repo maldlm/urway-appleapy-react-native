@@ -21,10 +21,11 @@ export default class Urway {
    * @param {number} amount - amount to by paid by applepay
    * @param {string} trackId - order id
    * @param {string} label - name to be diplayed in applepay sheet
+   * @param {string[]} allowedNetworks - name to be diplayed in applepay sheet
    *
    * @returns {Promise} - return an object of urway response please do check docs for more info
    */
-  processPayment(amount, trackId, label) {
+  processPayment(amount, trackId, label, allowedNetworks) {
     return new Promise((res, rej) => {
       if (Platform.OS === 'android') {
         throw new Error('applepay is not supported in android devices');
@@ -39,6 +40,7 @@ export default class Urway {
         this.merchantIdentifier,
         String(amount),
         label,
+        allowedNetworks,
         async (err, token) => {
           if (err) {
             if (err === 'dismiss') {
