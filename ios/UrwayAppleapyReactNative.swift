@@ -150,8 +150,12 @@ extension Applepay: PKPaymentAuthorizationControllerDelegate {
     }
 
     func paymentAuthorizationControllerDidFinish(_ controller: PKPaymentAuthorizationController) {
-        print("sheet closed")
+      print("sheet closed")
+      if (self.paymentStatus == .success) {
+        controller.dismiss(completion: nil)
+      } else {
         controller.dismiss(completion: userDismiss)
+      }
     }
 
     func userDismiss() {
