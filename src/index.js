@@ -103,7 +103,7 @@ export default class Urway {
       requestHash: hash,
       country: 'SA',
       currency: 'SAR',
-      customerIp: '10.10.10.10',
+      customerIp: '46.153.46.140',
       applepayId: 'applepay',
       udf1: null,
       udf2: config.callbackUrl,
