@@ -48,6 +48,7 @@ class Applepay : NSObject {
       .visa,
       .quicPay
   ]
+    
   @objc
     func createApplePayToken(_ merchantIdentfier:String,amount:String,label:String,allowedNetworks:[String], callback:@escaping RCTResponseSenderBlock) -> Void {
 
@@ -67,6 +68,12 @@ class Applepay : NSObject {
         self.startPayment(allowedNetworks: allowedNetworks)
     }
   }
+  @objc
+    func dismissApplePaySheet() -> Void {
+        if let paymentController = paymentController {
+            paymentController.dismiss(completion: nil)
+        }
+    }
 
   func startPayment(allowedNetworks:[String]) -> Void{
     let total = PKPaymentSummaryItem(label: self.label!, amount: NSDecimalNumber(string: self.amount!), type: .final)
@@ -152,7 +159,6 @@ extension Applepay: PKPaymentAuthorizationControllerDelegate {
     func paymentAuthorizationControllerDidFinish(_ controller: PKPaymentAuthorizationController) {
       print("sheet closed")
       if (self.paymentStatus == .success) {
-        controller.dismiss(completion: nil)
       } else {
         controller.dismiss(completion: userDismiss)
       }

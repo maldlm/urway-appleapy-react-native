@@ -1,6 +1,6 @@
 import CryptoJS from 'crypto-js';
 import { Alert, NativeModules, Platform } from 'react-native';
-import { config } from '../../../config';
+import { config } from '../../../src/utils/applepay';
 const { Applepay } = NativeModules;
 
 /**
@@ -25,6 +25,10 @@ export default class Urway {
    *
    * @returns {Promise} - return an object of urway response please do check docs for more info
    */
+
+  closeSheetApplePay(){
+    Applepay.dismissApplePaySheet()
+  }
   processPayment(amount, trackId, label, allowedNetworks) {
     return new Promise((res, rej) => {
       if (Platform.OS === 'android') {
@@ -81,18 +85,18 @@ export default class Urway {
     });
   }
   generatePaymentRequest(token, hash, amount, trackId, rej) {
-    if (token) {
-      if (token.includes('Simulated', 100)) {
-        Alert.alert('Error', `transaction was coming from a simulator`, [
-          {
-            text: 'ok',
-            style: 'default',
-          },
-        ]);
-        rej('transaction was coming from a simulator');
-        return;
-      }
-    }
+    // if (token) {
+    //   if (token.includes('Simulated', 100)) {
+    //     Alert.alert('Error', `transaction was coming from a simulator`, [
+    //       {
+    //         text: 'ok',
+    //         style: 'default',
+    //       },
+    //     ]);
+    //     rej('transaction was coming from a simulator');
+    //     return;
+    //   }
+    // }
     const paymentRequest = {
       trackid: trackId,
       terminalId: config.terminalId,
