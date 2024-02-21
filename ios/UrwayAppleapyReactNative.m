@@ -12,5 +12,7 @@
 
 RCT_EXTERN_METHOD(createApplePayToken:(NSString *)merchantIdentfier amount:(NSString *) amount label:(NSString *) label allowedNetworks:(NSArray *) allowedNetworks callback: (RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(dismissApplePaySheet)
+RCT_EXTERN_METHOD(finalizePayment:(BOOL)success callback:(RCTResponseSenderBlock)callback)
+
 
 @end
