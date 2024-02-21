@@ -29,6 +29,21 @@ export default class Urway {
   closeSheetApplePay(){
     Applepay.dismissApplePaySheet()
   }
+
+  finalizePayment(isSuccess){
+    return new Promise((resolve, reject) => {
+      Applepay.finalizePayment(
+        isSuccess,
+        async (err, data) => {
+          if (err) {
+            reject(`error  ${err}`);
+          }
+          resolve(data)
+        }
+      );
+    })
+  }
+
   processPayment(amount, trackId, label, allowedNetworks) {
     return new Promise((res, rej) => {
       if (Platform.OS === 'android') {
