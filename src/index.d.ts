@@ -22,6 +22,8 @@ declare module 'crypto-js' {
       constructor(merchantIdentifier: string);
 
       closeSheetApplePay(): void;
+
+      finalizePayment(isSuccess: boolean): Promise<any>;
   
       processPayment(
         amount: number,
