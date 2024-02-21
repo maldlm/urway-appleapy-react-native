@@ -28,6 +28,8 @@ class Applepay : NSObject {
   var result : PKPaymentAuthorizationResult?
   var amount : String?
   var err : PKPaymentAuthorizationResult?
+  var paymentAuthorizationCompletion: ((PKPaymentAuthorizationResult) -> Void)?
+
 
 
 
@@ -74,6 +76,21 @@ class Applepay : NSObject {
             paymentController.dismiss(completion: nil)
         }
     }
+
+  @objc func finalizePayment(_ success: Bool, callback: @escaping RCTResponseSenderBlock) {
+    let status: PKPaymentAuthorizationStatus = success ? .success : .failure
+    let paymentResult = PKPaymentAuthorizationResult(status: status, errors: nil)
+
+    // Correctly use `paymentAuthorizationCompletion` with the expected `PKPaymentAuthorizationResult`
+    if let completion = self.paymentAuthorizationCompletion {
+        completion(paymentResult) // Call the completion with `PKPaymentAuthorizationResult`
+        self.paymentAuthorizationCompletion = nil // Reset for future transactions
+        callback([NSNull(), "Payment finalized successfully"])
+    } else {
+        // Error handling if the completion handler is not set
+        callback(["Error: Payment authorization completion handler not found", NSNull()])
+    }
+  }
 
   func startPayment(allowedNetworks:[String]) -> Void{
     let total = PKPaymentSummaryItem(label: self.label!, amount: NSDecimalNumber(string: self.amount!), type: .final)
@@ -146,14 +163,14 @@ class Applepay : NSObject {
 extension Applepay: PKPaymentAuthorizationControllerDelegate {
 
     func paymentAuthorizationController(_ controller: PKPaymentAuthorizationController, didAuthorizePayment payment: PKPayment, handler completion: @escaping (PKPaymentAuthorizationResult) -> Void) {
-      let token = Applepay.generatePaymentKey(payment: payment)
-
-      self.paymentStatus = .success
-      self.response!([NSNull(),token])
-
-
-      completion(PKPaymentAuthorizationResult(status: self.paymentStatus, errors: nil ))
-
+        // Store the completion handler
+        self.paymentAuthorizationCompletion = completion
+        
+        // Convert the payment to a token and pass to React Native
+        let token = Applepay.generatePaymentKey(payment: payment)
+        self.response!([NSNull(), token])
+        
+        // Do not call completion here
     }
 
     func paymentAuthorizationControllerDidFinish(_ controller: PKPaymentAuthorizationController) {
